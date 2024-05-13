@@ -1,84 +1,135 @@
+#!/usr/bin/env node
+
 import Scenarist from '@faddys/scenarist';
-import { spawn} from 'node:child_process';
-import { createInterface, Interface } from 'node:readline';
-import { stdin as input, stdout as output } from 'node:process';
+import command from '@faddys/command';
 import { parse } from 'node:path';
 
-export default async ( ... command ) => ( ( await $ ( ... command ) ) .resolution );
+const $$ = Symbol .for;
 
-const $ = await Scenarist ( {
+try {
 
-$_producer ( $ ) {
+await Scenarist ( new class Roll {
 
-if ( process .argv [ 1 ] !== parse ( new URL ( import .meta .url ) .pathname ) .dir )
+constructor () {
+
+const argv = process .argv .slice ( 2 );
+
+if ( ! argv .length || argv .length > 1 )
+throw [
+
+! argv .length ? 'The <filename> is missing' : 'Too many arguments',
+'usage: roll <filename>'
+
+];
+
+this .filename = argv .pop ();
+
+}
+
+async $_producer ( $ ) {
+
+const roll = this;
+const script = await command ( 'cat', roll .filename )
+.then ( async $ => ( {
+
+output: await $ ( $$ ( 'output' ) ),
+error: await $ ( $$ ( 'error' ) )
+
+} ) );
+
+if ( script .error .length )
+throw error;
+
+roll .script = script .output;
+
+await $ ( $$ ( 'processor' ) );
+
+}
+
+index = 0
+
+async $_processor ( $ ) {
+
+const roll = this;
+
+if ( ! roll .script .length )
 return;
 
-this .interactive = true;
+roll .index++;
+roll .line = roll .script .shift ();
 
-const line = process .argv .slice ( 2 );
+await $ ( ... roll .line .trim () .split ( /\s+/ ) );
 
-if ( line .length )
-return $ ( ... line );
+await $ ( $$ ( 'processor' ) );
 
-(
+}
 
-this .interface = createInterface ( { input, output } )
-.on ( 'line', line => $ ( line ) )
-.on ( 'error', error => console .error ( error .message ) )
+async $$ ( $, ... line ) {
 
-) .prompt ();
+const roll = this;
 
-for ( const signal of [ 'SIGINT', 'SIGTERM', 'SIGHUP' ] )
-process .on ( signal, () => this .command .kill ( signal ) );
+if ( roll .command ) {
 
-},
+await roll .command ( $$ ( 'end' ) );
 
-$_director ( $, ... line ) {
+const output = await roll .command ( $$ ( 'output' ) );
 
-return new Promise ( async ( resolution, rejection ) => {
+if ( output .length )
+console .log ( output .join ( '\n' ) );
 
-this .command = spawn( 'bash', [ '-c', line .join ( ' ' ), "Faddy's Command" ] )
-.on ( 'error', error => rejection ( 'Bad command' ) )
-.on ( 'spawn', () => this .read () )
-.on ( 'exit', async () => {
+const error = await roll .command ( $$ ( 'error' ) );
 
-resolution ( this .command );
+if ( error .length )
+console .error ( error .join ( '\n' ) );
 
-if ( this .interface )
-this .interface .prompt ();
+}
 
-} );
+if ( ! line .length )
+throw [
 
-} );
+`#file ${ roll .filename }`,
+`#line ${ roll .index }`,
+"#error #syntax The command line can't be empty.",
+'#usage $ <commandline>',
+'#example $ echo Hello World'
 
-},
+];
 
-read () {
+roll .command = await command ( ... line );
 
-const { command } = this;
-command .output = [];
-command .error = [];
+}
 
-createInterface ( { input: command .stdout } )
-.on ( 'line', line => {
+async $_director ( $, ... line ) {
 
-command .output .push ( line );
+const roll = this;
 
-if ( this .interactive )
-console .log ( line );
+if ( ! roll .command )
+throw [
 
-} );
+"#error #syntax This line doesn't belong to a command input."
 
-createInterface ( { input: command .stderr } )
-.on ( 'line', line => {
+];
 
-command .error .push ( line );
-
-if ( this .interactive )
-console .error ( line );
-
-} );
+await roll .command ( roll .line );
 
 }
 
 } );
+
+} catch ( reasons ) {
+
+if ( reasons ?.forEach )
+reasons .forEach ( reason => console .error ( reason ) );
+
+else
+console .error ( reasons );
+
+const { dir } = parse ( new URL ( import .meta .url ) .pathname );
+const json = await command ( `cat ${ dir }/package.json` )
+.then ( async $ => await $ ( $$ ( 'output' ) ) );
+const metadata = JSON .parse ( json .join ( '\n' ) );
+
+console .error ( `
+${ metadata .name } v${ metadata .version }` );
+
+}

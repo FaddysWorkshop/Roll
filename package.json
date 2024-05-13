@@ -1,23 +1,22 @@
 {
-  "name": "@faddys/command",
+  "name": "@faddys/roll",
   "version": "1.0.0",
-  "description": "Faddy's Command Player",
+  "description": "Faddy's Commands Roll Player",
   "type": "module",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "bin": "./index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/FaddysWorkshop/command.git"
+    "url": "git+https://github.com/FaddysWorkshop/roll.git"
   },
   "author": "Faddy Michel <faddy.michel@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/FaddysWorkshop/command/issues"
+    "url": "https://github.com/FaddysWorkshop/roll/issues"
   },
-  "homepage": "https://github.com/FaddysWorkshop/command#readme",
+  "homepage": "https://github.com/FaddysWorkshop/roll#readme",
   "dependencies": {
-    "@faddys/scenarist": "^1.0.0"
+    "@faddys/command": "^5.0.1",
+    "@faddys/scenarist": "^2.1.0"
   }
 }

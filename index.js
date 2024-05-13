@@ -44,6 +44,8 @@ roll .script = script .output;
 
 await $ ( $$ ( 'processor' ) );
 
+await roll .finalize ();
+
 }
 
 index = 0
@@ -68,21 +70,8 @@ async $$ ( $, ... line ) {
 
 const roll = this;
 
-if ( roll .command ) {
-
-await roll .command ( $$ ( 'end' ) );
-
-const output = await roll .command ( $$ ( 'output' ) );
-
-if ( output .length )
-console .log ( output .join ( '\n' ) );
-
-const error = await roll .command ( $$ ( 'error' ) );
-
-if ( error .length )
-console .error ( error .join ( '\n' ) );
-
-}
+if ( roll .command )
+await roll .finalize ();
 
 if ( ! line .length )
 throw [
@@ -111,6 +100,24 @@ throw [
 ];
 
 await roll .command ( roll .line );
+
+}
+
+async finalize () {
+
+const roll = this;
+
+await roll .command ( $$ ( 'end' ) );
+
+const output = await roll .command ( $$ ( 'output' ) );
+
+if ( output .length )
+console .log ( output .join ( '\n' ) );
+
+const error = await roll .command ( $$ ( 'error' ) );
+
+if ( error .length )
+console .error ( error .join ( '\n' ) );
 
 }
 

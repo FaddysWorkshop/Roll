@@ -16,7 +16,7 @@
   },
   "homepage": "https://github.com/FaddysWorkshop/roll#readme",
   "dependencies": {
-    "@faddys/command": "^5.0.1",
+    "@faddys/command": "^5.1.1",
     "@faddys/scenarist": "^2.1.0"
   }
 }

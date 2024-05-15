@@ -14,15 +14,18 @@ constructor () {
 
 const argv = process .argv .slice ( 2 );
 
-if ( ! argv .length || argv .length > 1 )
+if ( ! argv .length )
 throw [
 
-! argv .length ? 'The <filename> is missing' : 'Too many arguments',
-'usage: roll <filename>'
+'The <filename> is missing',
+'usage: roll <filename> [ ... argumentsToFirstInRoll ]'
 
 ];
 
-this .filename = argv .pop ();
+const roll = this;
+
+roll .filename = argv .shift ();
+roll .argv = argv;
 
 }
 
@@ -66,7 +69,15 @@ await $ ( $$ ( 'processor' ) );
 
 }
 
-async $$ ( $, ... line ) {
+$$ = {
+
+async $_producer ( $, production ) {
+
+production .setting = await production .pilot ( production .stamp );
+
+},
+
+async $_director ( $, ... line ) {
 
 const roll = this;
 
@@ -84,7 +95,15 @@ throw [
 
 ];
 
-roll .command = await command ( ... line );
+roll .command = await command ( { stdio: 'inherit' }, ... line );
+
+},
+
+[ '$...' ] ( $, ... line ) {
+
+return $ ( '$', ... line, ... this .argv );
+
+}
 
 }
 

@@ -1,4 +1,4 @@
-$ cat - > test.orc
+?# cat - > test.orc
 
 sr = 48000
 ksmps = 32
@@ -13,10 +13,10 @@ out aNote
 
 endin
 
-$ cat - > test.sco
+?# cat - > test.sco
 
 i 1 0 1
 
-$ csound -odac test.orc test.sco
+?# csound -odac test.orc test.sco
 
-$ rm test.orc test.sco
+?# rm test.orc test.sco

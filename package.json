@@ -1,6 +1,6 @@
 {
   "name": "@faddys/roll",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Faddy's Commands Roll Player",
   "type": "module",
   "main": "index.js",
@@ -16,7 +16,7 @@
   },
   "homepage": "https://github.com/FaddysWorkshop/roll#readme",
   "dependencies": {
-    "@faddys/command": "^5.1.1",
-    "@faddys/scenarist": "^2.1.0"
+    "@faddys/command": "^5.2.0",
+    "@faddys/scenarist": "^2.2.0"
   }
 }

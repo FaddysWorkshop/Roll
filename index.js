@@ -2,6 +2,7 @@
 
 import Scenarist from '@faddys/scenarist';
 import command from '@faddys/command';
+import Page from './page.js';
 import { parse } from 'node:path';
 
 const $$ = Symbol .for;
@@ -15,12 +16,12 @@ constructor () {
 const argv = process .argv .slice ( 2 );
 
 if ( ! argv .length )
-throw [
+throw ReferenceError ( [
 
 'The <filename> is missing',
-'usage: roll <filename> [ ... argumentsToFirstInRoll ]'
+'Usage: roll <filename> [ ... arguments ]'
 
-];
+] .join ( '. ' ) );
 
 const roll = this;
 
@@ -41,13 +42,11 @@ error: await $ ( $$ ( 'error' ) )
 } ) );
 
 if ( script .error .length )
-throw error;
+throw Error ( script .error .join ( '\n' ) );
 
 roll .script = script .output;
 
 await $ ( $$ ( 'processor' ) );
-
-await roll .finalize ();
 
 }
 
@@ -58,7 +57,7 @@ async $_processor ( $ ) {
 const roll = this;
 
 if ( ! roll .script .length )
-return;
+return await $ ( $$ ( 'end' ) );
 
 roll .index++;
 roll .line = roll .script .shift ();
@@ -69,86 +68,13 @@ await $ ( $$ ( 'processor' ) );
 
 }
 
-$$ = {
-
-async $_producer ( $, production ) {
-
-production .setting = await production .pilot ( production .stamp );
-
-},
-
-async $_director ( $, ... line ) {
-
-const roll = this;
-
-if ( roll .command )
-await roll .finalize ();
-
-if ( ! line .length )
-throw [
-
-`#file ${ roll .filename }`,
-`#line ${ roll .index }`,
-"#error #syntax The command line can't be empty.",
-'#usage $ <commandline>',
-'#example $ echo Hello World'
-
-];
-
-roll .command = await command ( { stdio: 'inherit' }, ... line );
-
-},
-
-[ '$...' ] ( $, ... line ) {
-
-return $ ( '$', ... line, ... this .argv );
-
-}
-
-}
-
-async $_director ( $, ... line ) {
-
-const roll = this;
-
-if ( ! roll .command )
-throw [
-
-"#error #syntax This line doesn't belong to a command input."
-
-];
-
-await roll .command ( roll .line );
-
-}
-
-async finalize () {
-
-const roll = this;
-
-await roll .command ( $$ ( 'end' ) );
-
-const output = await roll .command ( $$ ( 'output' ) );
-
-if ( output .length )
-console .log ( output .join ( '\n' ) );
-
-const error = await roll .command ( $$ ( 'error' ) );
-
-if ( error .length )
-console .error ( error .join ( '\n' ) );
-
-}
+[ '$?#' ] = Page
 
 } );
 
-} catch ( reasons ) {
+} catch ( issue ) {
 
-if ( reasons ?.forEach )
-reasons .forEach ( reason => console .error ( reason ) );
-
-else
-console .error ( reasons );
+console .error ( issue .name + ':', issue .message );
 
 const { dir } = parse ( new URL ( import .meta .url ) .pathname );
 const json = await command ( `cat ${ dir }/package.json` )

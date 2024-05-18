@@ -56,13 +56,13 @@ await page .command ( Symbol .for ( 'exit' ) );
 
 }
 
-async [ '$=+' ] ( $, ... line ) {
+async [ '$++=' ] ( $, ... line ) {
 
 this .input .push ( line .join ( ' ' ) );
 
 }
 
-[ '$==+' ] () { this .open = true }
+[ '$+==' ] () { this .open = true }
 
 [ '$-==' ] () { this .open = false }
 

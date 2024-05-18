@@ -13,7 +13,7 @@ The end of a page is reached when Roll reads another line that starts with ?# or
 
 ?# cat - > beep.orc
 
-==+
++==
 sr = 48000
 ksmps = 32
 nchnls = 1
@@ -30,7 +30,7 @@ endin
 
 ?# cat - > beep.sco
 
-=+ i 1 0 1
+++= i 1 0 1
 
 ?# csound -odac beep.orc beep.sco
 

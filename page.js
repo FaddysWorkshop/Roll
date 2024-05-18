@@ -34,25 +34,31 @@ input = []
 
 $_director ( $, ... line ) {
 
-this .input .push ( line .join ( ' ' ) );
+const page = this;
+
+if ( page .open )
+page .input .push ( page .roll .line );
 
 }
 
 async $_run ( $ ) {
 
 const page = this;
-const input = page .input .join ( '\n' ) .trim ();
 
-if ( input ?.length )
+if ( page .input .length )
 page .options .stdio [ 0 ] = 'pipe';
 
 page .command = await command ( page .options, ... page .line );
 
-page .command ( Symbol .for ( 'end' ), input || undefined );
+page .command ( Symbol .for ( 'end' ), page .input .join ( '\n' ) || undefined );
 
 await page .command ( Symbol .for ( 'exit' ) );
 
 }
+
+[ '$#++' ] () { this .open = true }
+
+[ '$++#' ] () { this .open = false }
 
 $$ ( $, ... line ) {
 

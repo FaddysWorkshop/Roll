@@ -57,7 +57,7 @@ async $_processor ( $ ) {
 const roll = this;
 
 if ( ! roll .script .length )
-return await $ ( $$ ( 'end' ) );
+return await $ ( $$ ( 'run' ) );
 
 roll .index++;
 roll .line = roll .script .shift ();
@@ -74,7 +74,8 @@ await $ ( $$ ( 'processor' ) );
 
 } catch ( issue ) {
 
-console .error ( issue .name + ':', issue .message );
+console .error ( issue );
+//console .error ( issue .name + ':', issue .message );
 
 const { dir } = parse ( new URL ( import .meta .url ) .pathname );
 const json = await command ( `cat ${ dir }/package.json` )

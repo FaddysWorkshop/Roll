@@ -13,7 +13,7 @@ this .line = line;
 
 options = {
 
-stdio: [ 'pipe', 'inherit', 'inherit' ]
+stdio: [ 'ignore', 'inherit', 'inherit' ]
 
 }
 
@@ -22,16 +22,39 @@ async $_producer ( $, { stamp, pilot } ) {
 const page = this;
 const { scenario: roll } = await pilot ( stamp );
 
-pilot ( Symbol .for ( 'end' ) );
-await pilot ( Symbol .for ( 'exit' ) );
+await pilot ( Symbol .for ( 'run' ) );
 
 roll .$_director = $;
 
-page .$_director = await command ( page .options, ... page .line );
+page .roll = roll;
 
 }
 
-[ '$...' ] ( $, ... line ) {
+input = []
+
+$_director ( $, ... line ) {
+
+this .input .push ( line .join ( ' ' ) );
+
+}
+
+async $_run ( $ ) {
+
+const page = this;
+const input = page .input .join ( '\n' ) .trim ();
+
+if ( input ?.length )
+page .options .stdio [ 0 ] = 'pipe';
+
+page .command = await command ( page .options, ... page .line );
+
+page .command ( Symbol .for ( 'end' ), input || undefined );
+
+await page .command ( Symbol .for ( 'exit' ) );
+
+}
+
+$$ ( $, ... line ) {
 
 return $ ( ... line, ... this .roll .argv );
 

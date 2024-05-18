@@ -56,9 +56,15 @@ await page .command ( Symbol .for ( 'exit' ) );
 
 }
 
-[ '$#++' ] () { this .open = true }
+async [ '$=+' ] ( $, ... line ) {
 
-[ '$++#' ] () { this .open = false }
+this .input .push ( line .join ( ' ' ) );
+
+}
+
+[ '$==+' ] () { this .open = true }
+
+[ '$-==' ] () { this .open = false }
 
 $$ ( $, ... line ) {
 

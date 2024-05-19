@@ -12,6 +12,12 @@ this .line = line;
 
 },
 
+[ '$=0' ] ( $, ... line ) {
+
+return $ ( Symbol .for ( 'command' ), Symbol .for ( 'stdio' ), 0, 'inherit', ... line );
+
+},
+
 [ '$-1' ] ( $, ... line ) {
 
 return $ ( Symbol .for ( 'command' ), Symbol .for ( 'stdio' ), 1, 'ignore', ... line );

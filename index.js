@@ -29,29 +29,6 @@ roll .usage
 roll .filename = argv .shift ();
 roll .argv = argv;
 
-if ( roll .argv .length % 2 )
-throw RangeError ( [
-
-'The number of arguments passed to Roll must be even, where arguments are parsed in pairs resembling an environment variable name and its value.',
-roll .usage
-
-] .join ( '\n' ) );
-
-roll .environment ();
-
-}
-
-environment () {
-
-const roll = this;
-
-if ( ! roll .argv .length )
-return;
-
-process .env [ 'FR_' + roll .argv .shift () ] = roll .argv .shift ();
-
-return roll .environment ();
-
 }
 
 async $_producer ( $ ) {

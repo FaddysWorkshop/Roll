@@ -74,38 +74,4 @@ this .input .push ( line .join ( ' ' ) );
 
 [ '$-==' ] () { this .open = false }
 
-[ '$=-' ] = {
-
-async $_producer ( $, production ) {
-
-production .setting = await production .player ( production .stamp );
-
-},
-
-async $1 ( $, ... line ) {
-
-this .options .stdio [ 1 ] = 'ignore';
-
-if ( line .length )
-return await $ ( '=-', ... line );
-
-},
-
-async $2 ( $, ... line ) {
-
-this .options .stdio [ 2 ] = 'ignore';
-
-if ( line .length )
-return await $ ( '=-', ... line );
-
-}
-
-}
-
-$$ ( $, ... line ) {
-
-return $ ( ... line, ... this .roll .argv );
-
-}
-
 };

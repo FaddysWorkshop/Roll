@@ -11,22 +11,46 @@ try {
 
 await Scenarist ( new class Roll {
 
+usage = 'Usage: roll <filename> [ ... environmentVariableName environmentVariableValue ]';
+
 constructor () {
 
+const roll = this;
 const argv = process .argv .slice ( 2 );
 
 if ( ! argv .length )
 throw ReferenceError ( [
 
 'The <filename> is missing',
-'Usage: roll <filename> [ ... arguments ]'
+roll .usage
 
 ] .join ( '. ' ) );
 
-const roll = this;
-
 roll .filename = argv .shift ();
 roll .argv = argv;
+
+if ( roll .argv .length % 2 )
+throw RangeError ( [
+
+'The number of arguments passed to Roll must be even, where arguments are parsed in pairs resembling an environment variable name and its value.',
+roll .usage
+
+] .join ( '\n' ) );
+
+roll .environment ();
+
+}
+
+environment () {
+
+const roll = this;
+
+if ( ! roll .argv .length )
+return;
+
+process .env [ roll .argv .shift () ] = roll .argv .shift ();
+
+return roll .environment ();
 
 }
 
@@ -68,7 +92,28 @@ await $ ( $$ ( 'processor' ) );
 
 }
 
-[ '$?#' ] = Page
+[ '$?#' ] = Page;
+
+[ '$?+' ] ( $, variable, value ) {
+
+if ( variable === undefined )
+throw ReferenceError ( 'Environment variable cannot be undefined' );
+
+if ( value === undefined )
+throw ReferenceError ( 'Value for environment variable cannot be undefined' );
+
+process .env [ variable ] = value;
+
+}
+
+[ '$?-' ] ( $, variable, value ) {
+
+if ( variable === undefined )
+throw ReferenceError ( 'Environment variable cannot be undefined' );
+
+delete process .env [ variable ];
+
+}
 
 } );
 

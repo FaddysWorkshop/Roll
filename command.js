@@ -38,12 +38,6 @@ return $ ( Symbol .for ( 'command' ), ... line );
 
 },
 
-$$ ( $, ... line ) {
-
-return $ ( Symbol .for ( 'command' ), ... line, ... this .roll .argv );
-
-},
-
 [ '$:' ] ( $, ... line ) {
 
 this .wait = false;

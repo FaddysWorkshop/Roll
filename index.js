@@ -48,7 +48,7 @@ const roll = this;
 if ( ! roll .argv .length )
 return;
 
-process .env [ roll .argv .shift () ] = roll .argv .shift ();
+process .env [ 'FR_' + roll .argv .shift () ] = roll .argv .shift ();
 
 return roll .environment ();
 

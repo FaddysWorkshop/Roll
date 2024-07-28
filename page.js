@@ -64,13 +64,19 @@ await page .command ( Symbol .for ( 'exit' ) );
 
 }
 
+get [ '$/*++=*/' ] () { return this [ '$++=' ] }
+
 async [ '$++=' ] ( $, ... line ) {
 
 this .input .push ( line .join ( ' ' ) );
 
 }
 
+get [ '$//+==' ] () { return this [ '$+==' ] }
+
 [ '$+==' ] () { this .open = true }
+
+get [ '$//-==' ] () { return this [ '$-==' ] }
 
 [ '$-==' ] () { this .open = false }
 

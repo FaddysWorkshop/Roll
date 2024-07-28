@@ -1,6 +1,6 @@
 {
   "name": "@faddys/roll",
-  "version": "8.0.0",
+  "version": "8.0.1",
   "description": "Faddy's Commands Roll Player",
   "type": "module",
   "main": "index.js",
